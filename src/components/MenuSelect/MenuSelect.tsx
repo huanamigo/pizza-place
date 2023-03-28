@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import Select from 'react-select'
+import styles from './MenuSelect.module.scss'
 
 interface IProps {
   menu: {
@@ -20,11 +21,11 @@ interface IProps {
   }[],
   fetchData: (URL: string, toFetch: string) => Promise<void>
   chosenRestaurant: {
-    id: number;
+    value: number;
     label: string;
 }
   chooseRestaurant: React.Dispatch<React.SetStateAction<{
-    id: number;
+    value: number;
     label: string;
   }>>
 
@@ -56,13 +57,15 @@ interface IProps {
   setIsDisabled: React.Dispatch<React.SetStateAction<boolean>>
 
   cacheTime: number
+
+  isLoading: boolean
 }
 
 
-const MenuSelect = ({menu,  restaurants, chosenRestaurant, isDisabled, chosenPizza, cacheTime, setIsDisabled, fetchData, chooseRestaurant, choosePizza}:IProps) => {
+const MenuSelect = ({menu,  restaurants, chosenRestaurant, isDisabled, chosenPizza, cacheTime, setIsDisabled, fetchData, chooseRestaurant, choosePizza, isLoading}:IProps) => {
 
   const [pizzas, setPizzas] = useState<any>([{ //any because typescript dont know what filtering is
-    id: 0,
+    value: 0,
     label: '', 
     price: 0
   }])
@@ -71,7 +74,7 @@ const MenuSelect = ({menu,  restaurants, chosenRestaurant, isDisabled, chosenPiz
       let pizzasTemp = menu.map(pizza => {
           // why tf category searching does not work
           if(pizza.category === 'Pizza') {
-            return {id: pizza.id,label: pizza.name, price: pizza.price}
+            return {value: pizza.id,label: pizza.name, price: pizza.price}
           } else return undefined
         } 
       )
@@ -82,15 +85,38 @@ const MenuSelect = ({menu,  restaurants, chosenRestaurant, isDisabled, chosenPiz
 
   const rest = restaurants.map(restaurant => (
     {
-      id: restaurant.id,
+      value: restaurant.id,
       label: restaurant.name
     }
   ))
 
+  const selectColors = {
+    primary: '#baff53',
+    primary25: '#303030',
+    primary50: "#505050",
+    primary75: "white",
+    danger: "white",
+    dangerLight: "red",
+    neutral0: "#050505",
+    neutral5: "#202020",
+    neutral10: "gray",
+    neutral20: "#202020",
+    neutral30: "#baff53",
+    neutral40: "gray",
+    neutral50: "white",
+    neutral60: "#baff53",
+    neutral70: "white",
+    neutral80: "#e0e0e0",
+    neutral90: "white",
+  }
+
 
   return (
     <div>
-      <Select options={rest} value={chosenRestaurant} isSearchable onFocus={() => {
+      <Select className={styles.reactSelectContainer}  theme={theme => ({
+      ...theme,
+      colors: selectColors,
+    })} options={rest} value={chosenRestaurant} isLoading={isLoading} noOptionsMessage={() => <p>asd</p>} isSearchable onFocus={() => {
         if(Date.now() - cacheTime >= 36000000) {
           fetchData('https://private-anon-e10793997b-pizzaapp.apiary-mock.com/restaurants/', "restaurant")
         }
@@ -100,15 +126,20 @@ const MenuSelect = ({menu,  restaurants, chosenRestaurant, isDisabled, chosenPiz
         }
         setIsDisabled(false)
         if(Date.now() - cacheTime >= 36000000) {
-          fetchData(`http://private-anon-e10793997b-pizzaapp.apiary-mock.com/restaurants/${chosenRestaurant.id}/menu`, "menu")
+          fetchData(`http://private-anon-e10793997b-pizzaapp.apiary-mock.com/restaurants/${chosenRestaurant.value}/menu`, "menu")
         }
       }}
       />
-      <Select options={pizzas} value={chosenPizza} isDisabled={isDisabled} isSearchable onChange={(e) => {
+      <Select className={styles.reactSelectContainer} options={pizzas} value={chosenPizza} isDisabled={isDisabled} isSearchable onChange={(e) => {
         if(e !== undefined && e !== null) {
           choosePizza(e)
         }
-      }}/>
+      }} theme={theme => ({
+        ...theme,
+        colors: selectColors,
+        
+     
+      })}/>
     </div>
   )
 }

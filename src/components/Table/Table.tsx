@@ -62,7 +62,7 @@ const Table = ({order, orderCost, recalculate, setOrder}:IProps) => {
               <tr key={item.id}>
                 <th>{item.restaurant}</th>
                 <th>{item.product}</th>
-                <th><input type="number" onChange={(event) => {
+                <th><input type="number" className={styles.price} onChange={(event) => {
                   handleChange(item, event)
                   recalculate()
                 }} value={item.cost.toFixed(2)}/></th>

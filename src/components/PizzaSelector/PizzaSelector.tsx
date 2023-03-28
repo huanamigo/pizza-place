@@ -25,8 +25,8 @@ const PizzaSelector = () => {
     }
   ])
   const [chosenRestaurant, chooseRestaurant] = useState({
-    id: 0,
-    label: "Select..."
+    value: 0,
+    label: "Select restaurant..."
   })
   const [chosenPizza, choosePizza] = useState( 
     {
@@ -49,12 +49,13 @@ const PizzaSelector = () => {
   const [orderCost, setOrderCost] = useState(0)
   const [isDisabled, setIsDisabled] = useState(true);
   const [cacheTime, setCacheTime] = useState(0)
+  const [isLoading, setIsLoading] = useState(false)
   
   const handleClick = () => {
     let rest = ''
     if(chooseRestaurant !== undefined) {
       for(let i = 0; i < restaurants.length; i++){
-        if(chosenRestaurant.id === restaurants[i].id){
+        if(chosenRestaurant.value === restaurants[i].id){
           rest = restaurants[i].name
         }
       }
@@ -70,8 +71,8 @@ const PizzaSelector = () => {
     }])
     setIsDisabled(true)
     chooseRestaurant({
-      id: 0,
-      label: "Select..."
+      value: 0,
+      label: "Select restaurant..."
     })
     choosePizza({
       id: 0,
@@ -91,6 +92,7 @@ const PizzaSelector = () => {
   }
 
   const fetchData = async (URL:string, toFetch:string) => {
+    setIsLoading(true)
     const res = await fetch(URL)
     if (!res.ok) {
       console.log(String(res.status))
@@ -103,76 +105,77 @@ const PizzaSelector = () => {
         setCacheTime(Date.now())
       }
     }  
+    setIsLoading(false)
   }
 
   useEffect(() => {
     recalculate()
   })
 
-  useEffect(() => {
-    if(order.length > 1) {
-      localStorage.setItem('order', JSON.stringify(order))
-      localStorage.setItem('orderNumber', JSON.stringify(orderNumber))
-      // I don't think selected restaurants and pizzas should be saved too, but the pattern would be the same
-    }
-  }, [order, orderNumber])
+  // useEffect(() => {
+  //   if(order.length > 1) {
+  //     localStorage.setItem('order', JSON.stringify(order))
+  //     localStorage.setItem('orderNumber', JSON.stringify(orderNumber))
+  //     // I don't think selected restaurants and pizzas should be saved too, but the pattern would be the same
+  //   }
+  // }, [order, orderNumber])
 
-  useEffect(() => {
-    if(restaurants.length > 1) {
-      localStorage.setItem('restaurants', JSON.stringify(restaurants))
-    }
+  // useEffect(() => {
+  //   if(restaurants.length > 1) {
+  //     localStorage.setItem('restaurants', JSON.stringify(restaurants))
+  //   }
 
-    if(menu.length > 1) {
-      localStorage.setItem('menu', JSON.stringify(menu))
-    }
+  //   if(menu.length > 1) {
+  //     localStorage.setItem('menu', JSON.stringify(menu))
+  //   }
 
-    if(cacheTime !== 0) {
-      localStorage.setItem('cacheTime', JSON.stringify(cacheTime))
-    }
-  }, [restaurants, menu, cacheTime])
+  //   if(cacheTime !== 0) {
+  //     localStorage.setItem('cacheTime', JSON.stringify(cacheTime))
+  //   }
+  // }, [restaurants, menu, cacheTime])
 
-  useEffect(() => {
-    if(localStorage.getItem('order') !== null){
-      const order = JSON.parse(localStorage.getItem('order') || '')
-    if (order) {
-      setOrder(order)
-    }
-    }
+  // useEffect(() => {
+  //   if(localStorage.getItem('order') !== null){
+  //     const order = JSON.parse(localStorage.getItem('order') || '')
+  //   if (order) {
+  //     setOrder(order)
+  //   }
+  //   }
 
-    if(localStorage.getItem('orderNumber') !== null){
-      const orderNumber = JSON.parse(localStorage.getItem('orderNumber') || '')
-    if (orderNumber) {
-      setOrderNumber(orderNumber)
-    }
-    }
+  //   if(localStorage.getItem('orderNumber') !== null){
+  //     const orderNumber = JSON.parse(localStorage.getItem('orderNumber') || '')
+  //   if (orderNumber) {
+  //     setOrderNumber(orderNumber)
+  //   }
+  //   }
 
-    if(localStorage.getItem('restaurants') !== null){
-      const restaurants = JSON.parse(localStorage.getItem('restaurants') || '')
-    if (restaurants) {
-      setRestaurants(restaurants)
-    }
-    }
+  //   if(localStorage.getItem('restaurants') !== null){
+  //     const restaurants = JSON.parse(localStorage.getItem('restaurants') || '')
+  //   if (restaurants) {
+  //     setRestaurants(restaurants)
+  //   }
+  //   }
 
-    if(localStorage.getItem('menu') !== null){
-      const menu = JSON.parse(localStorage.getItem('menu') || '')
-    if (menu) {
-      setMenu(menu)
-    }
-    }
+  //   if(localStorage.getItem('menu') !== null){
+  //     const menu = JSON.parse(localStorage.getItem('menu') || '')
+  //   if (menu) {
+  //     setMenu(menu)
+  //   }
+  //   }
 
-    if(localStorage.getItem('cacheTime') !== null){
-      const cacheTime = JSON.parse(localStorage.getItem('cacheTime') || '')
-    if (cacheTime) {
-      setCacheTime(cacheTime)
-    }
-    }
+  //   if(localStorage.getItem('cacheTime') !== null){
+  //     const cacheTime = JSON.parse(localStorage.getItem('cacheTime') || '')
+  //   if (cacheTime) {
+  //     setCacheTime(cacheTime)
+  //   }
+  //   }
     
-  }, [])
+  // }, [])
 
 
   return (
     <div>
-      <MenuSelect order={order} setOrder={setOrder} isDisabled={isDisabled} setIsDisabled={setIsDisabled} menu={menu} fetchData={fetchData} restaurants={restaurants} chosenRestaurant={chosenRestaurant} chooseRestaurant={chooseRestaurant} chosenPizza={chosenPizza} choosePizza={choosePizza} cacheTime={cacheTime}/>
+      <MenuSelect isLoading={isLoading} order={order} setOrder={setOrder} isDisabled={isDisabled} setIsDisabled={setIsDisabled} menu={menu} fetchData={fetchData} restaurants={restaurants} chosenRestaurant={chosenRestaurant} chooseRestaurant={chooseRestaurant} chosenPizza={chosenPizza} choosePizza={choosePizza} cacheTime={cacheTime}/>
       <button disabled={isDisabled}  onClick={() => {
         handleClick()
         recalculate()
