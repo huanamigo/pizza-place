@@ -91,7 +91,7 @@ const MenuSelect = ({menu,  restaurants, chosenRestaurant, isDisabled, chosenPiz
   ))
 
   const selectColors = {
-    primary: '#baff53',
+    primary: '#f1f1f1',
     primary25: '#303030',
     primary50: "#505050",
     primary75: "white",
@@ -99,12 +99,12 @@ const MenuSelect = ({menu,  restaurants, chosenRestaurant, isDisabled, chosenPiz
     dangerLight: "red",
     neutral0: "#050505",
     neutral5: "#202020",
-    neutral10: "gray",
-    neutral20: "#202020",
-    neutral30: "#baff53",
+    neutral10: "#404040",
+    neutral20: "#505050",
+    neutral30: "#f1f1f1",
     neutral40: "gray",
     neutral50: "white",
-    neutral60: "#baff53",
+    neutral60: "#f1f1f1",
     neutral70: "white",
     neutral80: "#e0e0e0",
     neutral90: "white",
@@ -118,7 +118,7 @@ const MenuSelect = ({menu,  restaurants, chosenRestaurant, isDisabled, chosenPiz
       colors: selectColors,
     })} options={rest} value={chosenRestaurant} isLoading={isLoading} noOptionsMessage={() => <p>asd</p>} isSearchable onFocus={() => {
         if(Date.now() - cacheTime >= 36000000) {
-          fetchData('https://private-anon-e10793997b-pizzaapp.apiary-mock.com/restaurants/', "restaurant")
+          fetchData('https://private-anon-f64827731d-pizzaapp.apiary-mock.com/restaurants/', "restaurant")
         }
       }} onChange={(e) => {
         if(e !== null) {
@@ -126,7 +126,7 @@ const MenuSelect = ({menu,  restaurants, chosenRestaurant, isDisabled, chosenPiz
         }
         setIsDisabled(false)
         if(Date.now() - cacheTime >= 36000000) {
-          fetchData(`http://private-anon-e10793997b-pizzaapp.apiary-mock.com/restaurants/${chosenRestaurant.value}/menu`, "menu")
+          fetchData(`http://private-anon-f64827731d-pizzaapp.apiary-mock.com/restaurants/${chosenRestaurant.value}/menu`, "menu")
         }
       }}
       />

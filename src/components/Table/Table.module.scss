@@ -1,13 +1,22 @@
 .table {
-  color: #cbcbcb;
+  color: #ffffff;
+  background-color: black;
   border-collapse: collapse;
   width: 100%;
   table-layout: fixed;
+  font-size: larger;
+  margin-top: 20px;
   td,
   th {
     border: 1px solid #dddddd;
     text-align: left;
     padding: 8px;
+  }
+
+  th:nth-child(4),
+  td:nth-child(4) {
+    text-align: center;
+    width: 4em;
   }
 
   input {
@@ -20,4 +29,9 @@
   display: inline;
   color-scheme: dark;
   background-color: transparent;
+}
+
+.emptyOrder {
+  text-align: center;
+  color: #ffffff;
 }

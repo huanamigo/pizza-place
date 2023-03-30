@@ -1,87 +1,74 @@
-import React, { useState } from 'react'
-import styles from './Table.module.scss'
+import React from 'react';
+import styles from './Table.module.scss';
 
 interface IProps {
   order: {
-    id: number
+    id: number;
     restaurant: string;
     product: string;
     cost: number;
-  }[],
-  orderCost: number,
-  setOrder: React.Dispatch<React.SetStateAction<{
-    id:number
-    restaurant: string;
-    product: string;
-    cost: number;
-  }[]>>
-  recalculate: () => void
+  }[];
+  orderCost: number;
+  setOrder: React.Dispatch<
+    React.SetStateAction<
+      {
+        id: number;
+        restaurant: string;
+        product: string;
+        cost: number;
+      }[]
+    >
+  >;
 }
 
-interface IItem {
-  id: number;
-  restaurant: string;
-  product: string;
-  cost: number;
-}
-
-const Table = ({order, orderCost, recalculate, setOrder}:IProps) => {
-
-  const [value, setValue] = useState(0); // forcing re-render because react
-
-  const handleChange = (item:IItem, event:React.ChangeEvent<HTMLInputElement>) => {
-    let items = order
-    for(let i = 0; i < order.length; i++) {
-      if(order[i].id === item.id) {
-        items[i].cost = Number(event.target.value)
-      } 
-    }
-    setOrder(items)
-    setValue(value + 1)
-  }
-
-  
-
+const Table = ({ order, orderCost }: IProps) => {
   return (
-      <table className={styles.table}>
-        <thead>
-          <tr>
-            <th>Restaurant</th>
-            <th>Product</th>
-            <th>Cost</th>
-            <th>Actions</th>
-          </tr>
-        </thead>
-       
-        <tbody>
-           {order.map(item => {
-            if(item.id === 0 && item.restaurant === '') {
-              return null
-            }
-            return(
-              <tr key={item.id}>
-                <th>{item.restaurant}</th>
-                <th>{item.product}</th>
-                <th><input type="number" className={styles.price} onChange={(event) => {
-                  handleChange(item, event)
-                  recalculate()
-                }} value={item.cost.toFixed(2)}/></th>
-                <th>Remove</th>
-              </tr>
-            )
-          })}
-        </tbody>
+    <div>
+      {order.length === 1 ? (
+        <h1 className={styles.emptyOrder}>
+          Your order is empty. <br /> Use form above to get your favorite pizza
+          today!
+        </h1>
+      ) : (
+        <table className={styles.table}>
+          <thead>
+            <tr>
+              <th>Restaurant</th>
+              <th>Product</th>
+              <th>Cost</th>
+              <th>Remove</th>
+            </tr>
+          </thead>
 
-         <tfoot>
-          <tr>
-            <th colSpan={2}>Summary:</th>
-            <th>{orderCost.toFixed(2)}</th>
-            <th></th>
-          </tr>
-         </tfoot>
-        
-      </table>
-  )
-}
+          <tbody>
+            {order.map((item) => {
+              if (item.id === 0 && item.restaurant === '') {
+                return null;
+              }
+              return (
+                <tr key={item.id}>
+                  <td>{item.restaurant}</td>
+                  <td>{item.product}</td>
+                  <td>{item.cost.toFixed(2)}</td>
+                  <td>
+                    <i className="fa-solid fa-trash"></i>
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
 
-export default Table
+          <tfoot>
+            <tr>
+              <th colSpan={2}>Summary:</th>
+              <th>{orderCost.toFixed(2)}</th>
+              <th></th>
+            </tr>
+          </tfoot>
+        </table>
+      )}
+    </div>
+  );
+};
+
+export default Table;

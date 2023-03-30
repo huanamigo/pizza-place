@@ -51,7 +51,7 @@ const PizzaSelector = () => {
   const [cacheTime, setCacheTime] = useState(0)
   const [isLoading, setIsLoading] = useState(false)
   
-  const handleClick = () => {
+  const handleAddClick = () => {
     let rest = ''
     if(chooseRestaurant !== undefined) {
       for(let i = 0; i < restaurants.length; i++){
@@ -81,7 +81,7 @@ const PizzaSelector = () => {
     })
     setOrderNumber(orderNumber + 1)
   }
-
+ 
   const recalculate = () => {
     let tempCost = 0
     setOrderCost(0)
@@ -90,6 +90,8 @@ const PizzaSelector = () => {
     }
     setOrderCost(tempCost)
   }
+
+// fetching from api
 
   const fetchData = async (URL:string, toFetch:string) => {
     setIsLoading(true)
@@ -108,10 +110,11 @@ const PizzaSelector = () => {
     setIsLoading(false)
   }
 
-  useEffect(() => {
+ useEffect(() => {
     recalculate()
   })
-
+  
+// saving to local storage
   // useEffect(() => {
   //   if(order.length > 1) {
   //     localStorage.setItem('order', JSON.stringify(order))
@@ -176,11 +179,8 @@ const PizzaSelector = () => {
   return (
     <div>
       <MenuSelect isLoading={isLoading} order={order} setOrder={setOrder} isDisabled={isDisabled} setIsDisabled={setIsDisabled} menu={menu} fetchData={fetchData} restaurants={restaurants} chosenRestaurant={chosenRestaurant} chooseRestaurant={chooseRestaurant} chosenPizza={chosenPizza} choosePizza={choosePizza} cacheTime={cacheTime}/>
-      <button disabled={isDisabled}  onClick={() => {
-        handleClick()
-        recalculate()
-      }}>Add to table</button>
-      <Table order={order} recalculate={recalculate} orderCost={orderCost} setOrder={setOrder}/>
+      <button disabled={isDisabled}  onClick={handleAddClick}>Add to table</button>
+      <Table order={order}  orderCost={orderCost} setOrder={setOrder}/>
     </div>
   )
 }
