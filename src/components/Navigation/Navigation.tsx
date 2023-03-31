@@ -1,16 +1,20 @@
-import React from 'react'
-import styles from './Navigation.module.scss'
+import React from 'react';
+import styles from './Navigation.module.scss';
 
-const Navigation = () => {
+interface IProps {
+  resetAll: () => void;
+}
+
+const Navigation = ({ resetAll }: IProps) => {
   return (
     <div className={styles.container}>
       <div className={styles.wrapper}>
-      <i className="fa-solid fa-pizza-slice"></i>
-      <span>Slice World</span>
+        <i className="fa-solid fa-pizza-slice"></i>
+        <span>Slice World</span>
       </div>
-      <i className="fa-solid fa-rotate-left"></i>
+      <i onClick={resetAll} className="fa-solid fa-rotate-left"></i>
     </div>
-  )
-}
+  );
+};
 
-export default Navigation
+export default Navigation;

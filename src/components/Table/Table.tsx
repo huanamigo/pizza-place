@@ -9,19 +9,10 @@ interface IProps {
     cost: number;
   }[];
   orderCost: number;
-  setOrder: React.Dispatch<
-    React.SetStateAction<
-      {
-        id: number;
-        restaurant: string;
-        product: string;
-        cost: number;
-      }[]
-    >
-  >;
+  handleRemoveItem: (id: number) => void;
 }
 
-const Table = ({ order, orderCost }: IProps) => {
+const Table = ({ order, orderCost, handleRemoveItem }: IProps) => {
   return (
     <div>
       {order.length === 1 ? (
@@ -51,7 +42,10 @@ const Table = ({ order, orderCost }: IProps) => {
                   <td>{item.product}</td>
                   <td>{item.cost.toFixed(2)}</td>
                   <td>
-                    <i className="fa-solid fa-trash"></i>
+                    <i
+                      onClick={() => handleRemoveItem(item.id)}
+                      className="fa-solid fa-trash"
+                    ></i>
                   </td>
                 </tr>
               );

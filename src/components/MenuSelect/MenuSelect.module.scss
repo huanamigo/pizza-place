@@ -2,4 +2,45 @@
   color: #cbcbcb;
   margin-top: 10px;
   font-size: 20px;
+  cursor: pointer;
+}
+
+.selectButtonWrapper {
+  margin-top: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  button {
+    height: 100%;
+    width: 3rem;
+    background-color: black;
+    color: white;
+    border: 1px solid white;
+    font-size: 30px;
+    transition: all 200ms ease;
+    cursor: pointer;
+
+    &:hover {
+      filter: invert(1);
+    }
+
+    &:disabled {
+      background-color: #202020;
+      border: 1px solid black;
+      color: gray;
+
+      &:hover {
+        cursor: default;
+        filter: unset;
+      }
+    }
+  }
+
+  .reactSelectContainer {
+    display: block;
+    margin-top: 0;
+    margin-right: 10px;
+    width: 100%;
+  }
 }

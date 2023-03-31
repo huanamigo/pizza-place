@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react'
-import Select from 'react-select'
-import styles from './MenuSelect.module.scss'
+import React, { useEffect, useState } from 'react';
+import Select from 'react-select';
+import styles from './MenuSelect.module.scss';
 
 interface IProps {
   menu: {
@@ -10,7 +10,7 @@ interface IProps {
     topping?: string[];
     price: number;
     rank?: number;
-  }[],
+  }[];
   restaurants: {
     id: number;
     name: string;
@@ -18,130 +18,189 @@ interface IProps {
     address2: string;
     latitude: number;
     longitude: number;
-  }[],
-  fetchData: (URL: string, toFetch: string) => Promise<void>
+  }[];
+  fetchData: (URL: string, toFetch: string) => Promise<void>;
   chosenRestaurant: {
     value: number;
     label: string;
-}
-  chooseRestaurant: React.Dispatch<React.SetStateAction<{
-    value: number;
-    label: string;
-  }>>
+  };
+  chooseRestaurant: React.Dispatch<
+    React.SetStateAction<{
+      value: number;
+      label: string;
+    }>
+  >;
 
   chosenPizza: {
     id: number;
     label: string;
     price: number;
-  }
-  choosePizza: React.Dispatch<React.SetStateAction<{
-    id: number;
-    label: string;
-    price: number;
-  }>>
+  };
+  choosePizza: React.Dispatch<
+    React.SetStateAction<{
+      id: number;
+      label: string;
+      price: number;
+    }>
+  >;
 
   order: {
-    id: number
+    id: number;
     restaurant: string;
     product: string;
     cost: number;
-  }[],
-  setOrder: React.Dispatch<React.SetStateAction<{
-    id:number
-    restaurant: string;
-    product: string;
-    cost: number;
-  }[]>>
+  }[];
+  setOrder: React.Dispatch<
+    React.SetStateAction<
+      {
+        id: number;
+        restaurant: string;
+        product: string;
+        cost: number;
+      }[]
+    >
+  >;
 
-  isDisabled: boolean,
-  setIsDisabled: React.Dispatch<React.SetStateAction<boolean>>
+  isDisabled: boolean;
+  setIsDisabled: React.Dispatch<React.SetStateAction<boolean>>;
 
-  cacheTime: number
+  cacheTime: number;
 
-  isLoading: boolean
+  isLoading: boolean;
+
+  handleAddClick: () => void;
 }
 
-
-const MenuSelect = ({menu,  restaurants, chosenRestaurant, isDisabled, chosenPizza, cacheTime, setIsDisabled, fetchData, chooseRestaurant, choosePizza, isLoading}:IProps) => {
-
-  const [pizzas, setPizzas] = useState<any>([{ //any because typescript dont know what filtering is
-    value: 0,
-    label: '', 
-    price: 0
-  }])
+const MenuSelect = ({
+  menu,
+  restaurants,
+  isLoading,
+  chosenRestaurant,
+  chooseRestaurant,
+  isDisabled,
+  setIsDisabled,
+  chosenPizza,
+  choosePizza,
+  cacheTime,
+  fetchData,
+  handleAddClick,
+}: IProps) => {
+  const [pizzas, setPizzas] = useState<any>([
+    {
+      //any because typescript dont know what filtering is
+      value: 0,
+      label: '',
+      price: 0,
+    },
+  ]);
+  const [isButtonDisabled, setIsButtonDisabled] = useState(true);
 
   useEffect(() => {
-      let pizzasTemp = menu.map(pizza => {
-          // why tf category searching does not work
-          if(pizza.category === 'Pizza') {
-            return {value: pizza.id,label: pizza.name, price: pizza.price}
-          } else return undefined
-        } 
-      )
-      pizzasTemp = pizzasTemp.filter(item => item !== undefined).map(item => item)
-      setPizzas(pizzasTemp)
-  }, [menu])
-  
+    let pizzasTemp = menu.map((pizza) => {
+      // why tf category searching does not work
+      if (pizza.category === 'Pizza') {
+        return { value: pizza.id, label: pizza.name, price: pizza.price };
+      } else return undefined;
+    });
+    pizzasTemp = pizzasTemp
+      .filter((item) => item !== undefined)
+      .map((item) => item);
+    setPizzas(pizzasTemp);
+  }, [menu]);
 
-  const rest = restaurants.map(restaurant => (
-    {
-      value: restaurant.id,
-      label: restaurant.name
-    }
-  ))
+  const rest = restaurants.map((restaurant) => ({
+    value: restaurant.id,
+    label: restaurant.name,
+  }));
 
   const selectColors = {
     primary: '#f1f1f1',
     primary25: '#303030',
-    primary50: "#505050",
-    primary75: "white",
-    danger: "white",
-    dangerLight: "red",
-    neutral0: "#050505",
-    neutral5: "#202020",
-    neutral10: "#404040",
-    neutral20: "#505050",
-    neutral30: "#f1f1f1",
-    neutral40: "gray",
-    neutral50: "white",
-    neutral60: "#f1f1f1",
-    neutral70: "white",
-    neutral80: "#e0e0e0",
-    neutral90: "white",
-  }
-
+    primary50: '#505050',
+    primary75: 'white',
+    danger: 'white',
+    dangerLight: 'red',
+    neutral0: '#050505',
+    neutral5: '#202020',
+    neutral10: '#404040',
+    neutral20: '#505050',
+    neutral30: '#f1f1f1',
+    neutral40: 'gray',
+    neutral50: 'white',
+    neutral60: '#f1f1f1',
+    neutral70: 'white',
+    neutral80: '#e0e0e0',
+    neutral90: 'white',
+  };
 
   return (
     <div>
-      <Select className={styles.reactSelectContainer}  theme={theme => ({
-      ...theme,
-      colors: selectColors,
-    })} options={rest} value={chosenRestaurant} isLoading={isLoading} noOptionsMessage={() => <p>asd</p>} isSearchable onFocus={() => {
-        if(Date.now() - cacheTime >= 36000000) {
-          fetchData('https://private-anon-f64827731d-pizzaapp.apiary-mock.com/restaurants/', "restaurant")
-        }
-      }} onChange={(e) => {
-        if(e !== null) {
-            chooseRestaurant(e)
-        }
-        setIsDisabled(false)
-        if(Date.now() - cacheTime >= 36000000) {
-          fetchData(`http://private-anon-f64827731d-pizzaapp.apiary-mock.com/restaurants/${chosenRestaurant.value}/menu`, "menu")
-        }
-      }}
+      <Select
+        className={styles.reactSelectContainer}
+        theme={(theme) => ({
+          ...theme,
+          colors: selectColors,
+        })}
+        options={rest}
+        value={chosenRestaurant}
+        isLoading={isLoading}
+        noOptionsMessage={() => <p>asd</p>}
+        isSearchable
+        onFocus={() => {
+          if (Date.now() - cacheTime >= 36000000) {
+            fetchData(
+              'https://private-anon-f64827731d-pizzaapp.apiary-mock.com/restaurants/',
+              'restaurant'
+            );
+          }
+        }}
+        onChange={(e) => {
+          if (e !== null) {
+            chooseRestaurant(e);
+          }
+          setIsDisabled(false);
+          if (Date.now() - cacheTime >= 36000000) {
+            fetchData(
+              `http://private-anon-f64827731d-pizzaapp.apiary-mock.com/restaurants/${chosenRestaurant.value}/menu`,
+              'menu'
+            );
+          }
+        }}
       />
-      <Select className={styles.reactSelectContainer} options={pizzas} value={chosenPizza} isDisabled={isDisabled} isSearchable onChange={(e) => {
-        if(e !== undefined && e !== null) {
-          choosePizza(e)
-        }
-      }} theme={theme => ({
-        ...theme,
-        colors: selectColors,
-        
-     
-      })}/>
+      <div className={styles.selectButtonWrapper}>
+        <Select
+          className={styles.reactSelectContainer}
+          options={pizzas}
+          value={chosenPizza}
+          isDisabled={isDisabled}
+          isSearchable
+          onChange={(e) => {
+            if (e !== undefined && e !== null) {
+              choosePizza(e);
+            }
+            setIsButtonDisabled(false);
+          }}
+          theme={(theme) => ({
+            ...theme,
+            colors: selectColors,
+          })}
+        />
+        <button
+          className={styles.addButton}
+          disabled={isButtonDisabled}
+          onClick={() => {
+            if (!isDisabled) {
+              handleAddClick();
+            }
+            setIsDisabled(true);
+            setIsButtonDisabled(true);
+          }}
+        >
+          +
+        </button>
+      </div>
     </div>
-  )
-}
+  );
+};
 
-export default MenuSelect
+export default MenuSelect;
